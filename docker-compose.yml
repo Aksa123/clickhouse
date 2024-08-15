@@ -1,0 +1,30 @@
+version: '1'
+
+services:
+  clickhouse-server:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse-container
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - ./volume/data:/var/lib/clickhouse/:rw
+      - ./volume/logs:/var/log/clickhouse-server/:rw
+      - ./volume/config.xml:/etc/clickhouse-server/config.xml:ro
+    networks:
+      - dbnet
+    environment:
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+      - CLICKHOUSE_DB=trails
+      - CLICKHOUSE_USER=trails_usr
+      - CLICKHOUSE_PASSWORD=trails123
+    
+
+networks:
+  dbnet:
+    name: dbnet
+    external: true
